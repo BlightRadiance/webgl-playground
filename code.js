@@ -1,7 +1,17 @@
-if (Detector.webgl) {
+if (typeof require === 'function') // test for nodejs environment
+{
+  var THREE = require('three');
+  main();
+} else { // probably working from browser -> include all dependencies in index.html
+  mainWithGlTest();
+}
+
+function mainWithGlTest() {
+  if (Detector.webgl) {
     main();
-} else {
-    document.body.appendChild(Detector.getWebGLErrorMessage());
+  } else {
+      document.body.appendChild(Detector.getWebGLErrorMessage());
+  }
 }
 
 function main() {
