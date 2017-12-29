@@ -1,24 +1,22 @@
-const canvas = document.querySelector("#canvas");
-const gl = canvas.getContext("webgl");
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-if (!gl) {
-  alert("Unable to initialize WebGL. Your browser or machine may not support it.");
-} else {
-  prepareCanvas();
-  renderFrame();
-}
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 
-function prepareCanvas() {
-  function resize() {
-    canvas.width = window.innerWidth - 4;
-    canvas.height = window.innerHeight - 4;
-    renderFrame();
-  }
-  window.addEventListener('resize', resize, false); resize();
-  return canvas;
-}
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+var cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
 
-function renderFrame() {
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
+camera.position.z = 5;
+
+function animate() {
+  requestAnimationFrame( animate );
+
+  cube.rotation.x += 0.02;
+  cube.rotation.y += 0.02;
+  renderer.render( scene, camera );
 }
+animate();
