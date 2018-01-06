@@ -11,16 +11,44 @@ var aspect = window.innerWidth / window.innerHeight;
 var scene = new THREE.Scene();
 var camera = new THREE.OrthographicCamera(frustumSize * aspect / 2, frustumSize * aspect / -2, frustumSize / -2, frustumSize / 2, 0.0001, 5000);
 var renderer = new THREE.WebGLRenderer({ antialias: true });
-var geometry = new THREE.BoxGeometry(50, 50, 50);
 var gameObjects = {};
+var materials = {};
+var geometry = {};
 var module;
 
-var material = new THREE.MeshStandardMaterial({
-  roughness: 0.7,
-  color: 0xFF0000,
-  bumpScale: 0.002,
-  metalness: 0.2
-});
+function prepareGeometry() {
+  // Default
+  geometry[0] = new THREE.BoxGeometry(50, 50, 50);
+  // Player
+  geometry[1] = new THREE.BoxGeometry(150, 30, 50);
+  // Ball
+  geometry[2] = new THREE.SphereGeometry(25, 16, 16);
+}
+
+function prepareMaterials() {
+  // Default
+  materials[0] = new THREE.MeshStandardMaterial({
+    roughness: 0.7,
+    color: 0x3F3F3F,
+    bumpScale: 0.002,
+    metalness: 0.2
+  });
+  // Player
+  materials[1] = new THREE.MeshStandardMaterial({
+    roughness: 0.7,
+    color: 0x00FF00,
+    bumpScale: 0.002,
+    metalness: 0.2
+  });
+  // Ball
+  materials[2] = new THREE.MeshStandardMaterial({
+    roughness: 0.5,
+    color: 0xFFFFFF,
+    bumpScale: 0.002,
+    metalness: 0.2
+  });
+}
+
 
 mainWithGlTest();
 
@@ -44,6 +72,9 @@ function main() {
 
   document.body.appendChild(renderer.domElement);
 
+  prepareGeometry()
+  prepareMaterials();
+
   camera.position.z = 400;
   camera.lookAt(scene.position);
   camera.rotation.z = Math.PI;
@@ -51,12 +82,12 @@ function main() {
   var bulbGeometry = new THREE.SphereGeometry(2, 16, 8);
   var bulbLight = new THREE.PointLight(0xffee88, 1, 10000, 2);
   var bulbMat = new THREE.MeshStandardMaterial({
-    emissive: 0xffffee,
-    emissiveIntensity: 100,
-    color: 0x000000
+    emissive: 0xFFFFFF,
+    emissiveIntensity: 1000,
+    color: 0x000000,
   });
   bulbLight.add(new THREE.Mesh(bulbGeometry, bulbMat));
-  bulbLight.position.set(0, 0, 300);
+  bulbLight.position.set(0, 0, 500);
   scene.add(bulbLight);
 
   var gridHelper = new THREE.GridHelper(1000, 20);
@@ -86,6 +117,7 @@ function onDocumentMouseMove(event) {
   mouseY = event.clientY;
   module.on_mouse_move(mouseX, mouseY);
 }
+
 function onDocumentTouchStart(event) {
   if (event.touches.length > 1) {
     event.preventDefault();
@@ -94,6 +126,7 @@ function onDocumentTouchStart(event) {
     module.on_mouse_move(mouseX, mouseY);
   }
 }
+
 function onDocumentTouchMove(event) {
   if (event.touches.length == 1) {
     event.preventDefault();
