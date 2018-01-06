@@ -1,0 +1,8 @@
+/target/
+**/*.rs.bk
+Cargo.lock
+/dist/node_modules
+/dist/package-lock.json
+/dist/include/three.js
+/dist/package.json
+wasm-test.code-workspace
