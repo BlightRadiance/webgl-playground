@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate stdweb;
+extern crate vecmath;
 
 use stdweb::web::{
     self,
@@ -17,7 +18,12 @@ use stdweb::web::event::{
 };
 
 mod game;
+mod sat;
+mod utils;
+
+use utils::{min, max, split_vec_mut_around};
 use game::*;
+use sat::{ConvexObject};
 
 macro_rules! enclose {
     ( [$( $x:ident ),*] $y:expr ) => {
@@ -28,39 +34,131 @@ macro_rules! enclose {
     };
 }
 
+thread_local!(
+	static STATE: Rc<RefCell<WebGame>> = Rc::new(RefCell::new(WebGame::new()));
+);
+
 fn initial_render_call(state: &mut WebGame) {
 	//state.scene.clear();
+
+	// Player
 	let mut cube = GameObject::new(state.increment_global_object_counter(), &state.geometries.player_geometry, &state.materials.player);
-	state.scene.add(&cube);
-	cube.z = 50.0;
-	cube.y = -400.0;
-	state.player = Some(cube);
+	state.scene.add(&mut cube);
+	cube.position[2] = 25.0;
+	cube.position[1] = -400.0;
+	let verts = vec![[-75.0, 15.0], [75.0, 15.0], [75.0, -15.0], [-75.0, -15.0]];
+	let player = ConvexObject::new([cube.position[0], cube.position[1]], verts.clone());
+	state.player = Some(CollidableObject::new(cube, Box::new(player), Box::new(PlayerCollision {})));
 
-	let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
-	state.scene.add(&sphere);
-	sphere.z = 50.0;
-	sphere.y = -350.0;
-	sphere.update_position();
-	state.ball = Some(sphere);
-
-	for i in -7..8 {
-		for j in -8..9 {
-			let mut cube = GameObject::new(state.increment_global_object_counter(), &state.geometries.box_geometry, &state.materials.default);
-			cube.x = i as f32 * 55.0;
-			cube.y = j as f32 * 55.0;
-			cube.z = -25.1;
-			state.scene.add(&cube);
-			state.test.push(cube);
-		}
+	// Balls
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
+		sphere.position[1] = -350.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
 	}
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
+		sphere.position[1] = -300.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
+	}
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
+		sphere.position[1] = -250.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
+	}
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
+		sphere.position[1] = -200.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
+	}
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
+		sphere.position[1] = -150.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
+	}
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
+		sphere.position[1] = -100.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
+	}
+
+	//Walls
+	let verts = vec![[-25.0, 500.0], [25.0, 500.0], [25.0, -500.0], [-25.0, -500.0]];
+	let mut left_wall_obj = GameObject::new(state.increment_global_object_counter(), &state.geometries.side_walls_geometry, &state.materials.walls);
+	state.scene.add(&mut left_wall_obj);
+	left_wall_obj.position[0] = -475.0;
+	left_wall_obj.position[1] = 0.0;
+	left_wall_obj.position[2] = 25.0;
+	let left_wall = ConvexObject::new([left_wall_obj.position[0], left_wall_obj.position[1]], verts.clone());
+	state.objects.push(Box::new(CollidableObject::new(left_wall_obj, Box::new(left_wall), Box::new(WallCollision {}))));
+
+	let mut right_wall_obj = GameObject::new(state.increment_global_object_counter(), &state.geometries.side_walls_geometry, &state.materials.walls);
+	state.scene.add(&mut right_wall_obj);
+	right_wall_obj.position[0] = 475.0;
+	right_wall_obj.position[1] = 0.0;
+	right_wall_obj.position[2] = 25.0;
+	let right_wall = ConvexObject::new([right_wall_obj.position[0], right_wall_obj.position[1]], verts.clone());
+	state.objects.push(Box::new(CollidableObject::new(right_wall_obj, Box::new(right_wall), Box::new(WallCollision {}))));
+
+	let verts = vec![[-500.0, 25.0], [500.0, 25.0], [500.0, -25.0], [-500.0, -25.0]];
+	let mut top_wall_obj = GameObject::new(state.increment_global_object_counter(), &state.geometries.top_down_walls_geometry, &state.materials.walls);
+	state.scene.add(&mut top_wall_obj);
+	top_wall_obj.position[0] = 0.0;
+	top_wall_obj.position[1] = 500.0;
+	top_wall_obj.position[2] = 25.0;
+	let top_wall = ConvexObject::new([top_wall_obj.position[0], top_wall_obj.position[1]], verts.clone());
+	state.objects.push(Box::new(CollidableObject::new(top_wall_obj, Box::new(top_wall), Box::new(WallCollision {}))));
+
+	let mut bottom_wall_obj = GameObject::new(state.increment_global_object_counter(), &state.geometries.top_down_walls_geometry, &state.materials.walls);
+	state.scene.add(&mut bottom_wall_obj);
+	bottom_wall_obj.position[0] = 0.0;
+	bottom_wall_obj.position[1] = -500.0;
+	bottom_wall_obj.position[2] = 25.0;
+	let bottom_wall = ConvexObject::new([bottom_wall_obj.position[0], bottom_wall_obj.position[1]], verts.clone());
+	state.objects.push(Box::new(CollidableObject::new(bottom_wall_obj, Box::new(bottom_wall), Box::new(WallCollision {}))));
 }
 
-fn update(state: &mut WebGame, dt: f64) {
-	state.player.as_mut().unwrap().x = state.mouse_x;
-	state.player.as_ref().unwrap().update_position();
-	let offset = (state.current_time_in_seconds as f32).sin() * 10.0;
-	for obj in &mut state.test {
-		obj.update_position_with_offset(offset);
+fn update(mut state: &mut WebGame, dt: f64) {
+	let mut player = state.player.as_mut().unwrap();
+	player.object.position[0] = state.mouse_x;
+	player.update();
+
+	let mut objects_to_check_collision_against = Vec::new();
+	objects_to_check_collision_against.push(player);
+	for obj in &mut state.objects {
+		obj.as_mut().update();
+		objects_to_check_collision_against.push(obj.as_mut());
+	}
+
+	// Collide balls with collidable objects
+	for ball in &mut state.balls {
+		ball.update(&mut state.scene, dt, &mut objects_to_check_collision_against);
+	}
+
+	// Collide balls with other balls
+	let balls_count = state.balls.len();
+	for i in 0..balls_count {
+		let (batch_1, ball, batch_2) = split_vec_mut_around(&mut state.balls, i as usize);
+		ball.collide_with_other_balls(batch_1);
+		ball.collide_with_other_balls(batch_2);
 	}
 }
 
@@ -70,7 +168,7 @@ fn render(current_stamp: f64, dt: f64) {
 		if dt == 0.0 {
 			initial_render_call(&mut state.borrow_mut());
 		} else {
-			update(&mut state.borrow_mut(), dt);
+			update(&mut state.borrow_mut(), min(dt, 0.03333333333));
 			js!(
 				renderer.render(scene, camera);
 			);
@@ -80,14 +178,6 @@ fn render(current_stamp: f64, dt: f64) {
 		render(stamp, (stamp - current_stamp) / 1000.0);
 	});
 }
-
-thread_local!(
-	static STATE: Rc<RefCell<WebGame>> = Rc::new(RefCell::new(WebGame::new()));
-);
-
-fn min<T:PartialOrd>(a:T,b:T)->T { if a<b{a}else{b}}
-
-fn max<T:PartialOrd>(a:T,b:T)->T { if a>b{a}else{b}}
 
 fn on_mouse_move(x: i32, y: i32) {
 	STATE.with(|state| {

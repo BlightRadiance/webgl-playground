@@ -23,6 +23,11 @@ function prepareGeometry() {
   geometry[1] = new THREE.BoxGeometry(150, 30, 50);
   // Ball
   geometry[2] = new THREE.SphereGeometry(25, 16, 16);
+
+  // Side walls
+  geometry[3] = new THREE.BoxGeometry(50, 1000, 50);
+  // Top and down walls
+  geometry[4] = new THREE.BoxGeometry(1000, 50, 50);
 }
 
 function prepareMaterials() {
@@ -30,22 +35,27 @@ function prepareMaterials() {
   materials[0] = new THREE.MeshStandardMaterial({
     roughness: 0.7,
     color: 0x3F3F3F,
-    bumpScale: 0.002,
     metalness: 0.2
   });
   // Player
   materials[1] = new THREE.MeshStandardMaterial({
-    roughness: 0.7,
-    color: 0x00FF00,
-    bumpScale: 0.002,
-    metalness: 0.2
+    emissive: 0x000000,
+    roughness: 1,
+    color: 0x000000,
+    metalness: 1.0
   });
   // Ball
   materials[2] = new THREE.MeshStandardMaterial({
-    roughness: 0.5,
-    color: 0xFFFFFF,
-    bumpScale: 0.002,
-    metalness: 0.2
+    emissive: 0x000000,
+    color: 0x005050,
+    metalness: 1.0
+  });
+  // Walls
+  materials[3] = new THREE.MeshStandardMaterial({
+    emissive: 0x000000,
+    roughness: 1,
+    color: 0x000000,
+    metalness: 1.0
   });
 }
 
@@ -65,6 +75,9 @@ function mainWithGlTest() {
 
 function main() {
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
   window.addEventListener('resize', onWindowResize, false);
   document.addEventListener('mousemove', onDocumentMouseMove, false);
   document.addEventListener('touchstart', onDocumentTouchStart, false);
@@ -79,22 +92,28 @@ function main() {
   camera.lookAt(scene.position);
   camera.rotation.z = Math.PI;
 
-  var bulbGeometry = new THREE.SphereGeometry(2, 16, 8);
-  var bulbLight = new THREE.PointLight(0xffee88, 1, 10000, 2);
-  var bulbMat = new THREE.MeshStandardMaterial({
-    emissive: 0xFFFFFF,
-    emissiveIntensity: 1000,
-    color: 0x000000,
-  });
-  bulbLight.add(new THREE.Mesh(bulbGeometry, bulbMat));
-  bulbLight.position.set(0, 0, 500);
-  scene.add(bulbLight);
-
   var gridHelper = new THREE.GridHelper(1000, 20);
   gridHelper.rotation.x = Math.PI / 2.0;
-  scene.add(gridHelper);
+  //scene.add(gridHelper);
+  //scene.add(new THREE.AxesHelper(100));
 
-  scene.add(new THREE.AxisHelper(100));
+  var sphere = new THREE.SphereGeometry(50.0, 16, 8);
+
+  var light1 = new THREE.PointLight(0xFFFFFF, 15, 5000, 2.0);
+  light1.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffFFFF })));
+  light1.position.z = 1000;
+  scene.add(light1);
+
+  var floor = new THREE.BoxGeometry(1000, 1000, 0.1);
+  var floorMat = new THREE.MeshStandardMaterial({
+    emissive: 0x808080,
+    roughness: 1,
+    color: 0x202020,
+    metalness: 1.0
+  });
+  var floorMesh = new THREE.Mesh(floor, floorMat);
+  floorMesh.position.z = -1;
+  scene.add(floorMesh);
 
   module.init();
   module.on_sceen_size_changed(window.innerWidth, window.innerHeight);
