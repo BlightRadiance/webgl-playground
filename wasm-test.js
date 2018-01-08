@@ -28,23 +28,14 @@ if( typeof Rust === 'undefined' ) {
 
     const __imports = {
         env: {
-            "__extjs_ff2c75b4783fd5c9d8c934bbd4a03e66527e05e4": function($0) {
-                Module.STDWEB.tmp = Module.STDWEB.to_js( $0 );
-            },
-            "__extjs_21ca452112a9fbc71e2e43a589896d83c68b5791": function($0, $1) {
-                $1 = Module.STDWEB.to_js($1);Module.STDWEB.from_js($0, (function(){return ($1). key ;})());
-            },
-            "__extjs_84c33117bbcdea15c2c7cef1b33f9ea9af612b7d": function($0) {
-                $0 = Module.STDWEB.to_js($0);($0). preventDefault ();
-            },
             "__extjs_de942ef9ccd064c41dc92d5b5bf83c61aeb00278": function($0) {
                 Module.STDWEB.increment_refcount( $0 );
             },
             "__extjs_d8a439451216bbc6cd9f3012f189d2ad6a2e9459": function($0) {
                 Module.STDWEB.decrement_refcount( $0 );
             },
-            "__extjs_e9d84225304abfe1f0ac0649a5e9eacd15517749": function($0) {
-                return (Module.STDWEB.acquire_js_reference( $0 ) instanceof KeyboardEvent) | 0;
+            "__extjs_5e6047bbfe94fe1af24b74661201b674108b8d16": function($0, $1, $2, $3) {
+                $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){Module.exports.on_mouse_move = ($1); Module.exports.on_sceen_size_changed = ($2); Module.exports.init = ($3);})());
             },
             "__extjs_cf8ef57870d176e111428c0ad472311c5c8d5d07": function($0) {
                 Module.STDWEB.from_js($0, (function(){return window ;})());
@@ -79,11 +70,14 @@ if( typeof Rust === 'undefined' ) {
             "__extjs_20637d8f642203b38c263a5d0f43b9d88ec67c31": function($0, $1, $2) {
                 console.error( 'Panic location:', Module.STDWEB.to_js_string( $0, $1 ) + ':' + $2 );
             },
-            "__extjs_5e6047bbfe94fe1af24b74661201b674108b8d16": function($0, $1, $2, $3) {
-                $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){Module.exports.on_mouse_move = ($1); Module.exports.on_sceen_size_changed = ($2); Module.exports.init = ($3);})());
+            "__extjs_81d99dd180b9769eb1e2b2849590216cf5c21704": function($0, $1, $2, $3) {
+                $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){var listener = ($1); ($2). addEventListener (($3), listener); return listener ;})());
             },
-            "__extjs_4d0a6a2cc62bab05def27a41f855191667057be7": function($0, $1) {
-                $1 = Module.STDWEB.to_js($1);Module.STDWEB.from_js($0, (function(){console.log ("Got button: " , ($1));})());
+            "__extjs_a316bcb4c088cc4946fb65fe0972e7956d19f38e": function($0, $1, $2, $3) {
+                $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){var callback = ($1); var request = ($2). requestAnimationFrame (callback); return {request : request , callback : callback , window : ($3)};})());
+            },
+            "__extjs_432937a2f8711dcb7380ec04206637bc9ab91a9c": function($0) {
+                Module.STDWEB.from_js($0, (function(){renderer.render (scene , camera);})());
             },
             "__extjs_931588227b8813cbd25e0ac596bcfc9125ce734b": function($0, $1, $2, $3) {
                 $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){gameObjects [($1)]= new THREE.Mesh (geometry [($2)], materials [($3)]);})());
@@ -91,23 +85,20 @@ if( typeof Rust === 'undefined' ) {
             "__extjs_bf272e747e4d44d0e02bbd01debe68ce50e7cc99": function($0, $1, $2, $3, $4) {
                 $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);$4 = Module.STDWEB.to_js($4);Module.STDWEB.from_js($0, (function(){var obj = gameObjects [($1)]; obj.position.x = ($2); obj.position.y = ($3); obj.position.z = ($4);})());
             },
-            "__extjs_4a0f7124765c449ccba3985b462ea093c752dc84": function($0, $1, $2, $3) {
-                $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){var obj = gameObjects [($1)]; obj.position.x = ($2); obj.position.y = ($3);})());
+            "__extjs_8877d213f5b4b9f9cfe7af54e057a9a1e85fc4b2": function($0, $1) {
+                $1 = Module.STDWEB.to_js($1);Module.STDWEB.from_js($0, (function(){var obj = gameObjects [($1)]; scene.add (obj);})());
             },
-            "__extjs_08c8604769b6bb688009ad194acce088861eedf2": function($0, $1, $2, $3, $4) {
-                $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);$4 = Module.STDWEB.to_js($4);Module.STDWEB.from_js($0, (function(){var obj = gameObjects [($1)]; obj.position.x = ($2); obj.position.y = ($3); obj.position.z = ($4); scene.add (obj);})());
+            "__extjs_ff2c75b4783fd5c9d8c934bbd4a03e66527e05e4": function($0) {
+                Module.STDWEB.tmp = Module.STDWEB.to_js( $0 );
             },
-            "__extjs_432937a2f8711dcb7380ec04206637bc9ab91a9c": function($0) {
-                Module.STDWEB.from_js($0, (function(){renderer.render (scene , camera);})());
+            "__extjs_e9d84225304abfe1f0ac0649a5e9eacd15517749": function($0) {
+                return (Module.STDWEB.acquire_js_reference( $0 ) instanceof KeyboardEvent) | 0;
             },
-            "__extjs_81d99dd180b9769eb1e2b2849590216cf5c21704": function($0, $1, $2, $3) {
-                $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){var listener = ($1); ($2). addEventListener (($3), listener); return listener ;})());
+            "__extjs_21ca452112a9fbc71e2e43a589896d83c68b5791": function($0, $1) {
+                $1 = Module.STDWEB.to_js($1);Module.STDWEB.from_js($0, (function(){return ($1). key ;})());
             },
-            "__extjs_a316bcb4c088cc4946fb65fe0972e7956d19f38e": function($0, $1, $2, $3) {
-                $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){var callback = ($1); var request = ($2). requestAnimationFrame (callback); return {request : request , callback : callback , window : ($3)};})());
-            },
-            "sinf": function($0) {
-                return Math.sin( $0 );
+            "__extjs_84c33117bbcdea15c2c7cef1b33f9ea9af612b7d": function($0) {
+                $0 = Module.STDWEB.to_js($0);($0). preventDefault ();
             },
             "__web_on_grow": function() {
                 const buffer = Module.instance.exports.memory.buffer;
