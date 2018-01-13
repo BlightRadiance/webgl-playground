@@ -76,9 +76,6 @@ if( typeof Rust === 'undefined' ) {
             "__extjs_a316bcb4c088cc4946fb65fe0972e7956d19f38e": function($0, $1, $2, $3) {
                 $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){var callback = ($1); var request = ($2). requestAnimationFrame (callback); return {request : request , callback : callback , window : ($3)};})());
             },
-            "__extjs_432937a2f8711dcb7380ec04206637bc9ab91a9c": function($0) {
-                Module.STDWEB.from_js($0, (function(){renderer.render (scene , camera);})());
-            },
             "__extjs_931588227b8813cbd25e0ac596bcfc9125ce734b": function($0, $1, $2, $3) {
                 $1 = Module.STDWEB.to_js($1);$2 = Module.STDWEB.to_js($2);$3 = Module.STDWEB.to_js($3);Module.STDWEB.from_js($0, (function(){gameObjects [($1)]= new THREE.Mesh (geometry [($2)], materials [($3)]);})());
             },
@@ -87,6 +84,9 @@ if( typeof Rust === 'undefined' ) {
             },
             "__extjs_8877d213f5b4b9f9cfe7af54e057a9a1e85fc4b2": function($0, $1) {
                 $1 = Module.STDWEB.to_js($1);Module.STDWEB.from_js($0, (function(){var obj = gameObjects [($1)]; scene.add (obj);})());
+            },
+            "__extjs_432937a2f8711dcb7380ec04206637bc9ab91a9c": function($0) {
+                Module.STDWEB.from_js($0, (function(){renderer.render (scene , camera);})());
             },
             "__extjs_ff2c75b4783fd5c9d8c934bbd4a03e66527e05e4": function($0) {
                 Module.STDWEB.tmp = Module.STDWEB.to_js( $0 );

@@ -5,11 +5,10 @@ if (typeof require === 'function') // test for nodejs environment
 
 // Global variables. Used mostly in rust code
 var mouseX = 0, mouseY = 0
-var frustumSize = 1000;
 var aspect = window.innerWidth / window.innerHeight;
 
 var scene = new THREE.Scene();
-var camera = new THREE.OrthographicCamera(frustumSize * aspect / 2, frustumSize * aspect / -2, frustumSize / -2, frustumSize / 2, 0.0001, 5000);
+var camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight, 1, 5000);
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 var gameObjects = {};
 var materials = {};
@@ -40,21 +39,20 @@ function prepareMaterials() {
   // Player
   materials[1] = new THREE.MeshStandardMaterial({
     emissive: 0x000000,
-    roughness: 1,
-    color: 0x000000,
+    color: 0xFFFFFF,
     metalness: 1.0
   });
   // Ball
   materials[2] = new THREE.MeshStandardMaterial({
-    emissive: 0x000000,
-    color: 0x005050,
-    metalness: 1.0
+    emissive: 0x313131,
+    color: 0xAA0000,
+    metalness: 1.0,
+    roughness: 0.3,
   });
   // Walls
   materials[3] = new THREE.MeshStandardMaterial({
     emissive: 0x000000,
-    roughness: 1,
-    color: 0x000000,
+    color: 0xFFFFFF,
     metalness: 1.0
   });
 }
@@ -88,21 +86,22 @@ function main() {
   prepareGeometry()
   prepareMaterials();
 
-  camera.position.z = 400;
+  camera.position.z = 850;
   camera.lookAt(scene.position);
-  camera.rotation.z = Math.PI;
 
   var gridHelper = new THREE.GridHelper(1000, 20);
   gridHelper.rotation.x = Math.PI / 2.0;
   //scene.add(gridHelper);
   //scene.add(new THREE.AxesHelper(100));
 
-  var sphere = new THREE.SphereGeometry(50.0, 16, 8);
+  var sphere = new THREE.SphereGeometry(0.0, 0, 0);
 
   var light1 = new THREE.PointLight(0xFFFFFF, 15, 5000, 2.0);
   light1.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffFFFF })));
-  light1.position.z = 1000;
+  light1.position.z = 250;
+  light1.position.y = 400;
   scene.add(light1);
+
 
   var floor = new THREE.BoxGeometry(1000, 1000, 0.1);
   var floorMat = new THREE.MeshStandardMaterial({
@@ -121,11 +120,7 @@ function main() {
 
 function onWindowResize() {
   var aspect = window.innerWidth / window.innerHeight;
-  camera.left = frustumSize * aspect / 2;
-  camera.right = - frustumSize * aspect / 2;
-  camera.top = - frustumSize / 2;
-  camera.bottom = frustumSize / 2;
-
+  camera.aspect = aspect;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   module.on_sceen_size_changed(window.innerWidth, window.innerHeight);
