@@ -55,6 +55,22 @@ fn initial_render_call(state: &mut WebGame) {
 		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
 		state.scene.add(&mut sphere);
 		sphere.position[2] = 50.0;
+		sphere.position[1] = -450.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
+	}
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
+		sphere.position[1] = -400.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
+	}
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
 		sphere.position[1] = -350.0;
 		sphere.update();
 		state.balls.push(BallObject::new(sphere, 25.0));
@@ -96,6 +112,14 @@ fn initial_render_call(state: &mut WebGame) {
 		state.scene.add(&mut sphere);
 		sphere.position[2] = 50.0;
 		sphere.position[1] = -100.0;
+		sphere.update();
+		state.balls.push(BallObject::new(sphere, 25.0));
+	}
+	{
+		let mut sphere = GameObject::new(state.increment_global_object_counter(), &state.geometries.sphere_geometry, &state.materials.ball);
+		state.scene.add(&mut sphere);
+		sphere.position[2] = 50.0;
+		sphere.position[1] = -50.0;
 		sphere.update();
 		state.balls.push(BallObject::new(sphere, 25.0));
 	}
@@ -190,7 +214,7 @@ fn on_mouse_move(x: i32, y: i32) {
 		let half_h = state.screen_h as f32 / 2.0;
 
 		state.mouse_x = (x as f32 - half_w) / state.screen_w as f32 * real_width;		
-		state.mouse_x = min(max(state.mouse_x, -state.frustum_size / 2.0), state.frustum_size / 2.0);
+		state.mouse_x = min(max(state.mouse_x, (-state.frustum_size / 2.0) + 100.0), state.frustum_size / 2.0 - 100.0);
 
 		// Does not matter for now
 		state.mouse_y = y as f32 - half_h;
