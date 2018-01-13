@@ -8,7 +8,7 @@ var mouseX = 0, mouseY = 0
 var aspect = window.innerWidth / window.innerHeight;
 
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight, 1, 5000);
+var camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 500);
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 var gameObjects = {};
 var materials = {};
@@ -17,16 +17,16 @@ var module;
 
 function prepareGeometry() {
   // Default
-  geometry[0] = new THREE.BoxGeometry(50, 50, 50);
+  geometry[0] = new THREE.BoxGeometry(5, 5, 10);
   // Player
-  geometry[1] = new THREE.BoxGeometry(150, 30, 50);
+  geometry[1] = new THREE.BoxGeometry(20, 3.0, 8);
   // Ball
-  geometry[2] = new THREE.SphereGeometry(25, 16, 16);
+  geometry[2] = new THREE.SphereGeometry(2.5, 16, 16);
 
   // Side walls
-  geometry[3] = new THREE.BoxGeometry(50, 1000, 50);
+  geometry[3] = new THREE.BoxGeometry(5, 100, 10);
   // Top and down walls
-  geometry[4] = new THREE.BoxGeometry(1000, 50, 50);
+  geometry[4] = new THREE.BoxGeometry(100, 5, 10);
 }
 
 function prepareMaterials() {
@@ -86,24 +86,25 @@ function main() {
   prepareGeometry()
   prepareMaterials();
 
-  camera.position.z = 850;
+  camera.position.z = 85;
   camera.lookAt(scene.position);
 
-  var gridHelper = new THREE.GridHelper(1000, 20);
+  var gridHelper = new THREE.GridHelper(100, 20);
   gridHelper.rotation.x = Math.PI / 2.0;
   //scene.add(gridHelper);
   //scene.add(new THREE.AxesHelper(100));
 
-  var sphere = new THREE.SphereGeometry(0.0, 0, 0);
-
-  var light1 = new THREE.PointLight(0xFFFFFF, 15, 5000, 2.0);
-  light1.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffFFFF })));
-  light1.position.z = 250;
-  light1.position.y = 400;
+  var light1 = new THREE.PointLight(0xFFFFFF, 7, 130, 0.1);
+  light1.add(new THREE.Mesh(undefined, new THREE.MeshBasicMaterial({ color: 0xffFFFF })));
+  light1.position.z = 20;
+  light1.position.y = 0;
+  light1.castShadow = true;
   scene.add(light1);
 
+  var light = new THREE.AmbientLight(0x404040);
+  scene.add(light);
 
-  var floor = new THREE.BoxGeometry(1000, 1000, 0.1);
+  var floor = new THREE.BoxGeometry(100, 100, 0.1);
   var floorMat = new THREE.MeshStandardMaterial({
     emissive: 0x808080,
     roughness: 1,

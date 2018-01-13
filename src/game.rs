@@ -36,7 +36,7 @@ impl WebGame {
 			mouse_y: 0.0,
 			screen_w: 0,
 			screen_h: 0,
-			frustum_size: 1000.0,
+			frustum_size: 100.0,
 			materials: Materials::new(),
 			geometries: Geometries::new(),
 			current_time_in_seconds: 0.0,
@@ -79,9 +79,12 @@ pub struct GameObject {
 }
 
 impl GameObject {
-	pub fn new(id: u32, geometry: &Geometry, material: &Material) -> Self {
+	pub fn new(id: u32, geometry: &Geometry, material: &Material, cast_shadows: bool, receive_shadows: bool) -> Self {
 		js!(
-			gameObjects[@{id}] = new THREE.Mesh(geometry[@{geometry.get_id()}], materials[@{material.get_id()}]);
+			var temp = new THREE.Mesh(geometry[@{geometry.get_id()}], materials[@{material.get_id()}]);
+			temp.castShadow = @{cast_shadows};
+			temp.receiveShadow = @{receive_shadows};
+			gameObjects[@{id}] = temp;
 		);
 		GameObject {
 			id: id,
@@ -255,7 +258,7 @@ impl BallObject {
 		BallObject {
 			object: object,
 			shape: shape,
-			v: [850.0, 850.0],
+			v: [85.0, 85.0],
 		}
 	}
 
